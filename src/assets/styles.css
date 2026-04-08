@@ -1,0 +1,250 @@
+:root {
+  color-scheme: light dark;
+  --bg: #f6f2ea;
+  --surface: #f6f2ea;
+  --text: #1f1b17;
+  --muted: #6a6258;
+  --line: #c9c1b6;
+  --accent: #383229;
+  --content: 46rem;
+  --space-1: 0.75rem;
+  --space-2: 1.25rem;
+  --space-3: 2rem;
+  --space-4: 3rem;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #151311;
+    --surface: #151311;
+    --text: #ece5da;
+    --muted: #b3a796;
+    --line: #4a433c;
+    --accent: #f0eadf;
+  }
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family:
+    "Iowan Old Style",
+    "Palatino Linotype",
+    "URW Palladio L",
+    "Book Antiqua",
+    Georgia,
+    serif;
+  line-height: 1.72;
+}
+
+html[lang^="zh"] body {
+  font-family:
+    "Songti TC",
+    "Noto Serif TC",
+    "PingFang TC",
+    "Hiragino Mincho ProN",
+    serif;
+}
+
+a {
+  color: inherit;
+  text-decoration-thickness: 0.08em;
+  text-underline-offset: 0.16em;
+}
+
+a:hover {
+  color: var(--accent);
+}
+
+.skip-link {
+  position: absolute;
+  left: 0.75rem;
+  top: 0.75rem;
+  transform: translateY(-200%);
+  background: var(--text);
+  color: var(--bg);
+  padding: 0.5rem 0.75rem;
+}
+
+.skip-link:focus {
+  transform: translateY(0);
+}
+
+.site-shell {
+  width: min(calc(100% - 2rem), var(--content));
+  margin: 0 auto;
+  padding: var(--space-3) 0 var(--space-4);
+}
+
+.site-header {
+  padding-bottom: var(--space-2);
+  margin-bottom: var(--space-3);
+  border-bottom: 1px solid var(--line);
+}
+
+.brand-lockup {
+  display: grid;
+  gap: 0.35rem;
+  margin-bottom: var(--space-2);
+}
+
+.eyebrow,
+.tenet-kicker,
+.site-nav,
+.language-switch {
+  font-size: 0.78rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.brand-mark {
+  width: fit-content;
+  color: var(--text);
+  text-decoration: none;
+  font-size: clamp(2.3rem, 7vw, 4rem);
+  line-height: 1;
+}
+
+.brand-subtitle {
+  margin: 0;
+  font-size: 1.05rem;
+  color: var(--text);
+}
+
+.language-line {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.95rem;
+}
+
+.site-nav,
+.language-switch {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.site-nav a,
+.language-switch a {
+  text-decoration: none;
+}
+
+.site-nav a:hover,
+.language-switch a:hover,
+.language-switch a[aria-current="page"] {
+  color: var(--text);
+  text-decoration: underline;
+}
+
+.intro-block {
+  margin-bottom: var(--space-3);
+}
+
+.intro-block h1 {
+  margin: 0 0 var(--space-1);
+  font-size: clamp(2rem, 6vw, 3.6rem);
+  line-height: 1.02;
+  font-weight: 400;
+}
+
+.lede {
+  margin: 0;
+  font-size: 1.15rem;
+  color: var(--text);
+}
+
+.section-block {
+  padding-top: var(--space-2);
+  margin-top: var(--space-2);
+  border-top: 1px solid var(--line);
+}
+
+.section-head {
+  margin-bottom: var(--space-2);
+}
+
+.section-head h2,
+.prose h2 {
+  margin: 0 0 var(--space-1);
+  font-size: 1.15rem;
+  font-weight: 400;
+}
+
+.prose p,
+.section-head p {
+  margin: 0 0 1rem;
+}
+
+.prose p:last-child,
+.section-head p:last-child {
+  margin-bottom: 0;
+}
+
+.doctrine-list,
+.language-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.doctrine-item,
+.language-item {
+  padding: var(--space-2) 0;
+  border-top: 1px solid var(--line);
+  scroll-margin-top: var(--space-3);
+}
+
+.doctrine-item:last-child,
+.language-item:last-child {
+  border-bottom: 1px solid var(--line);
+}
+
+.doctrine-item h2,
+.language-item h2 {
+  margin: 0 0 0.5rem;
+  font-size: 1.5rem;
+  font-weight: 400;
+}
+
+.tenet-short {
+  margin: 0 0 0.75rem;
+  font-style: italic;
+  color: var(--text);
+}
+
+.tenet-gloss,
+.language-card__summary,
+.language-card__action {
+  margin: 0;
+}
+
+.language-card__action {
+  margin-top: 0.75rem;
+}
+
+@media (max-width: 640px) {
+  .site-shell {
+    width: min(calc(100% - 1.25rem), var(--content));
+    padding-top: 1.2rem;
+  }
+
+  .site-nav,
+  .language-switch {
+    gap: 0.75rem;
+  }
+
+  .doctrine-item h2,
+  .language-item h2 {
+    font-size: 1.3rem;
+  }
+}

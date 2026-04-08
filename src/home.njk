@@ -1,0 +1,23 @@
+---
+pagination:
+  data: site.languages
+  size: 1
+  alias: locale
+  addAllPagesToCollections: true
+layout: layouts/base.njk
+pageType: home
+translationKey: home
+permalink: "{{ locale | homePermalink }}"
+---
+<ol class="doctrine-list" id="tenets">
+  {% for tenet in tenets.list %}
+    <li class="doctrine-item">
+      <article id="tenet-{{ tenet.slug }}" aria-labelledby="tenet-{{ tenet.slug }}-title">
+        <p class="tenet-kicker">{{ tenet.id | tenetLabel(locale) }}</p>
+        <h2 id="tenet-{{ tenet.slug }}-title">{{ tenet.name[locale] or tenet.name[site.defaultLanguage] }}</h2>
+        <p class="tenet-short">{{ tenet.short[locale] or tenet.short[site.defaultLanguage] }}</p>
+        <p class="tenet-gloss">{{ tenet.gloss[locale] or tenet.gloss[site.defaultLanguage] }}</p>
+      </article>
+    </li>
+  {% endfor %}
+</ol>

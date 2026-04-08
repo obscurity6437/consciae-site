@@ -1,0 +1,49 @@
+# OS-generated files
+.DS_Store
+Thumbs.db
+
+# Editor settings and swap files
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# Local staging area for incoming site content
+/tmp/
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Local environment and secrets
+.env
+.env.*
+!.env.example
+
+# Dependencies
+node_modules/
+.bundle/
+vendor/bundle/
+
+# Static-site build output and caches
+_site/
+.jekyll-cache/
+.jekyll-metadata
+.sass-cache/
+.cache/
+.parcel-cache/
+.astro/
+.next/
+.nuxt/
+dist/
+build/
+coverage/
+.hugo_build.lock
+
+# Cloudflare local tooling state
+.wrangler/
+.dev.vars

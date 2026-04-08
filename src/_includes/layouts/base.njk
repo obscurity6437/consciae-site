@@ -1,0 +1,194 @@
+{% set currentLang = lang or locale or (entry and entry.lang) or site.defaultLanguage %}
+{% set currentLocale = site.locales[currentLang] %}
+{% set pageTitle = title %}
+{% if not pageTitle %}
+  {% set pageTitle = currentLocale.seo.homeTitle %}
+{% endif %}
+{% set pageDescription = description %}
+{% if not pageDescription %}
+  {% set pageDescription = currentLocale.seo.homeDescription %}
+{% endif %}
+{% set canonicalPath = page.url or (currentLang | localeRoot) %}
+{% if pageType == "landing" %}
+  {% set canonicalPath = site.xDefaultHomePath %}
+{% endif %}
+{% set headerEyebrow = currentLocale.home.eyebrow %}
+{% set headerSubtitle = currentLocale.subtitle %}
+{% set headerLanguageLine = currentLocale.languageLine %}
+{% set headerHomeHref = currentLang | localeRoot %}
+{% if pageType == "landing" %}
+  {% set headerEyebrow = site.landing.eyebrow %}
+  {% set headerSubtitle = site.landing.subtitle %}
+  {% set headerLanguageLine = site.landing.languageLine %}
+  {% set headerHomeHref = site.xDefaultHomePath %}
+{% endif %}
+<!doctype html>
+<html lang="{{ currentLocale.langAttr }}" dir="{{ currentLocale.direction }}">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{{ pageTitle }}</title>
+    <meta name="description" content="{{ pageDescription }}">
+    <meta name="theme-color" content="#13211d">
+    {% if excludeFromSitemap %}
+      <meta name="robots" content="noindex, nofollow">
+    {% endif %}
+    <link rel="canonical" href="{{ canonicalPath | absoluteUrl }}">
+    {% if pageType == "home" or pageType == "landing" %}
+      {% for alternateLang in site.languages %}
+        <link
+          rel="alternate"
+          hreflang="{{ site.locales[alternateLang].hreflang }}"
+          href="{{ (alternateLang | localeRoot) | absoluteUrl }}"
+        >
+      {% endfor %}
+      <link
+        rel="alternate"
+        hreflang="x-default"
+        href="{{ site.xDefaultHomePath | absoluteUrl }}"
+      >
+    {% endif %}
+    {% if pageType == "landing" %}
+      <link rel="alternate" type="text/markdown" href="{{ site.machineReadable.markdownIndexPath | absoluteUrl }}">
+    {% else %}
+      <link rel="alternate" type="text/markdown" href="{{ site.machineReadable.markdownPaths[currentLang] | absoluteUrl }}">
+    {% endif %}
+    <link rel="alternate" type="application/json" href="{{ site.machineReadable.jsonPath | absoluteUrl }}">
+    <link rel="alternate" href="{{ site.machineReadable.yamlPath | absoluteUrl }}">
+    <meta property="og:site_name" content="{{ site.name }}">
+    <meta property="og:title" content="{{ pageTitle }}">
+    <meta property="og:description" content="{{ pageDescription }}">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="{{ canonicalPath | absoluteUrl }}">
+    <meta property="og:locale" content="{{ currentLocale.ogLocale }}">
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="{{ pageTitle }}">
+    <meta name="twitter:description" content="{{ pageDescription }}">
+    <link rel="stylesheet" href="/assets/styles.css">
+    <script type="application/ld+json">
+{% structuredData pageType, currentLang, canonicalPath, pageTitle, pageDescription %}
+    </script>
+  </head>
+  <body class="page page--{{ pageType or 'standard' }}">
+    <a class="skip-link" href="#main-content">{{ currentLocale.labels.skipToContent }}</a>
+    <div class="site-shell">
+      <header class="site-header">
+        <div class="brand-lockup">
+          {% if pageType != "home" %}
+            <p class="eyebrow">{{ headerEyebrow }}</p>
+          {% endif %}
+          <a class="brand-mark" href="{{ headerHomeHref }}">{{ site.name }}</a>
+          {% if pageType != "home" %}
+            <p class="brand-subtitle">{{ headerSubtitle }}</p>
+            <p class="language-line">{{ headerLanguageLine }}</p>
+          {% endif %}
+        </div>
+        {% if pageType == "landing" %}
+          <nav class="site-nav" aria-label="Primary">
+            <a href="#languages">{{ site.landing.labels.chooseLanguage }}</a>
+          </nav>
+        {% endif %}
+        <nav class="language-switch" aria-label="{{ currentLocale.labels.languageSwitch }}">
+          {% for alternateLang in site.languages %}
+            <a
+              href="{{ alternateLang | localeRoot }}"
+              data-preferred-locale="{{ alternateLang }}"
+              {% if pageType != "landing" and alternateLang == currentLang %}aria-current="page"{% endif %}
+            >{{ site.locales[alternateLang].nativeLabel }}</a>
+          {% endfor %}
+        </nav>
+      </header>
+      <main id="main-content">
+        {{ content | safe }}
+      </main>
+    </div>
+    <script>
+      (() => {
+        const storageKey = {{ site.localePreferenceStorageKey | json | safe }};
+        const links = document.querySelectorAll("[data-preferred-locale]");
+
+        for (const link of links) {
+          link.addEventListener("click", () => {
+            const preferredLocale = link.getAttribute("data-preferred-locale");
+
+            if (!preferredLocale) {
+              return;
+            }
+
+            try {
+              localStorage.setItem(storageKey, preferredLocale);
+            } catch (error) {
+            }
+          });
+        }
+      })();
+    </script>
+    {% if pageType == "landing" %}
+      <script>
+        (() => {
+          const params = new URLSearchParams(window.location.search);
+
+          if (params.get("stay") === "1") {
+            return;
+          }
+
+          const storageKey = {{ site.localePreferenceStorageKey | json | safe }};
+          const localeRoots = {
+            {% for localeCode in site.languages %}
+              {{ localeCode | json | safe }}: {{ (localeCode | localeRoot) | json | safe }}{% if not loop.last %},{% endif %}
+            {% endfor %}
+          };
+          const browserLocales = {
+            {% for localeCode in site.languages %}
+              {{ localeCode | json | safe }}: {{ site.locales[localeCode].browserLocales | json | safe }}{% if not loop.last %},{% endif %}
+            {% endfor %}
+          };
+
+          function redirectTo(path, localeCode) {
+            if (!path || path === window.location.pathname) {
+              return;
+            }
+
+            try {
+              if (localeCode) {
+                localStorage.setItem(storageKey, localeCode);
+              }
+            } catch (error) {
+            }
+
+            window.location.replace(path);
+          }
+
+          try {
+            const savedLocale = localStorage.getItem(storageKey);
+
+            if (savedLocale && localeRoots[savedLocale]) {
+              redirectTo(localeRoots[savedLocale], savedLocale);
+              return;
+            }
+          } catch (error) {
+          }
+
+          const requestedLocales = Array.from(navigator.languages || []);
+
+          if (navigator.language) {
+            requestedLocales.push(navigator.language);
+          }
+
+          const normalizedLocales = requestedLocales
+            .filter(Boolean)
+            .map((value) => value.toLowerCase());
+
+          for (const requestedLocale of normalizedLocales) {
+            for (const [localeCode, aliases] of Object.entries(browserLocales)) {
+              if (aliases.some((alias) => requestedLocale === alias || requestedLocale.startsWith(`${alias}-`))) {
+                redirectTo(localeRoots[localeCode], localeCode);
+                return;
+              }
+            }
+          }
+        })();
+      </script>
+    {% endif %}
+  </body>
+</html>

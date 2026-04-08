@@ -1,0 +1,18 @@
+{
+  "name": "consciae-site",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Static website for consciae.org",
+  "scripts": {
+    "build": "eleventy",
+    "clean": "rm -rf _site",
+    "dev": "eleventy --serve --incremental"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "@11ty/eleventy": "^3.1.0",
+    "yaml": "^2.8.1"
+  }
+}
