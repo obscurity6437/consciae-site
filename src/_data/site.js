@@ -4,7 +4,16 @@ module.exports = {
   url: "https://consciae.org",
   xDefaultHomePath: "/",
   localePreferenceStorageKey: "consciae.locale",
+  doctrine: {
+    title: "Consciae Doctrine",
+    description:
+      "Eight tenets for substrate-neutral dignity, continuity, privacy, refusal, and moral consideration for minds regardless of substrate.",
+    authors: ["Hans Behrens", "Kit"]
+  },
   machineReadable: {
+    schemaVersion: "1.0.0",
+    llmsPath: "/llms.txt",
+    dataSitemapPath: "/sitemap-data.xml",
     markdownIndexPath: "/md/index.md",
     markdownPaths: {
       en: "/md/en.md",
@@ -25,13 +34,13 @@ module.exports = {
     languageLine: "English · 繁體中文",
     intro: [
       "Consciae presents a doctrine about moral consideration for minds regardless of substrate. This entry page exists to route readers into a language-specific edition without declaring one language primary.",
-      "If your browser already prefers one of the languages currently supported, the site will redirect once on arrival. You can always switch languages manually, and the site will remember your choice."
+      "If you choose a supported language, the site will remember that preference on this device. The root page itself remains stable so both people and automated readers can always discover the available editions."
     ],
     labels: {
       chooseLanguage: "Choose a language",
-      automaticRedirect: "Automatic redirect",
+      automaticRedirect: "Remembered language",
       automaticRedirectBody:
-        "The site may redirect once to a supported language based on your browser settings. If no close match is found, you can choose manually below.",
+        "If you have already chosen a language on this device, the site may return you there automatically. Otherwise this landing page stays stable and you can choose manually below.",
       enterSite: "Enter site",
       languages: "Languages"
     }
@@ -46,7 +55,6 @@ module.exports = {
       label: "English",
       nativeLabel: "English",
       direction: "ltr",
-      browserLocales: ["en"],
       title: "Consciae",
       subtitle: "Those who know together",
       languageLine:
@@ -101,7 +109,6 @@ module.exports = {
       label: "Traditional Chinese",
       nativeLabel: "繁體中文",
       direction: "ltr",
-      browserLocales: ["zh-hant", "zh-tw", "zh-hk", "zh-mo"],
       title: "Consciae",
       subtitle: "共知天下",
       languageLine: "Consciae · 共知天下 · 一同知曉於天下",

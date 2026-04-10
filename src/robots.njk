@@ -6,4 +6,6 @@ eleventyExcludeFromCollections: true
 User-agent: *
 Allow: /
 
+# Machine-readable discovery: {{ site.machineReadable.llmsPath | absoluteUrl }}
 Sitemap: {{ "/sitemap.xml" | absoluteUrl }}
+Sitemap: {{ site.machineReadable.dataSitemapPath | absoluteUrl }}

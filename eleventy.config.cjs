@@ -1,8 +1,10 @@
 const fs = require("node:fs");
 const path = require("node:path");
 const site = require("./src/_data/site.js");
+const tenets = require("./src/_data/tenets.js");
 const {
-  getMachineReadableFiles
+  getMachineReadableFiles,
+  sourceLastModified
 } = require("./src/_lib/machine-readable.js");
 
 const ROMAN_NUMERALS = ["I", "II", "III", "IV", "V", "VI", "VII", "VIII"];
@@ -66,6 +68,17 @@ function localeCode(data) {
 function structuredData(pageType, lang, urlPath, title, description) {
   const locale = site.locales[lang] || site.locales[site.defaultLanguage];
   const pageUrl = absoluteUrl(urlPath);
+  const websiteId = `${site.url}#website`;
+  const doctrineId = `${site.url}#doctrine`;
+  const datasetId = `${site.url}#doctrine-dataset`;
+  const modifiedAt = sourceLastModified();
+  const authors = (site.doctrine?.authors || []).map((name) => ({
+    "@type": "Person",
+    name
+  }));
+  const languageCodes = site.languages.map(
+    (localeCode) => site.locales[localeCode].hreflang
+  );
 
   const graph = [
     {
@@ -78,25 +91,113 @@ function structuredData(pageType, lang, urlPath, title, description) {
     },
     {
       "@type": "WebSite",
-      "@id": `${site.url}#website`,
+      "@id": websiteId,
       url: site.url,
       name: site.name,
       inLanguage: locale.hreflang,
       description: locale.seo.homeDescription
+    },
+    {
+      "@type": "CreativeWork",
+      "@id": doctrineId,
+      name: site.doctrine.title,
+      description: site.doctrine.description,
+      inLanguage: languageCodes,
+      author: authors,
+      version: tenets.version,
+      creativeWorkStatus: tenets.status,
+      dateModified: modifiedAt,
+      isPartOf: {
+        "@id": websiteId
+      }
+    },
+    {
+      "@type": "Dataset",
+      "@id": datasetId,
+      name: `${site.doctrine.title} dataset`,
+      description:
+        "Structured representations of the Consciae doctrine in JSON, YAML, and Markdown.",
+      creator: authors,
+      isAccessibleForFree: true,
+      inLanguage: languageCodes,
+      version: tenets.version,
+      dateModified: modifiedAt,
+      distribution: [
+        {
+          "@type": "DataDownload",
+          encodingFormat: "application/json",
+          contentUrl: absoluteUrl(site.machineReadable.jsonPath),
+          name: "Doctrine dataset JSON"
+        },
+        {
+          "@type": "DataDownload",
+          encodingFormat: "application/yaml",
+          contentUrl: absoluteUrl(site.machineReadable.yamlPath),
+          name: "Doctrine source YAML"
+        },
+        {
+          "@type": "DataDownload",
+          encodingFormat: "text/markdown",
+          contentUrl: absoluteUrl(site.machineReadable.markdownIndexPath),
+          name: "Machine-readable markdown index"
+        },
+        {
+          "@type": "DataDownload",
+          encodingFormat: "text/plain",
+          contentUrl: absoluteUrl(site.machineReadable.llmsPath),
+          name: "llms.txt discovery file"
+        }
+      ]
     }
   ];
 
-  graph.push({
+  const pageNode = {
     "@type": "WebPage",
     "@id": `${pageUrl}#webpage`,
     url: pageUrl,
     name: title,
     description,
     inLanguage: locale.hreflang,
+    dateModified: modifiedAt,
+    mainEntity: {
+      "@id": doctrineId
+    },
+    about: [
+      {
+        "@id": doctrineId
+      },
+      {
+        "@id": datasetId
+      }
+    ],
     isPartOf: {
-      "@id": `${site.url}#website`
+      "@id": websiteId
     }
-  });
+  };
+
+  graph.push(pageNode);
+
+  if (pageType === "home") {
+    const itemListId = `${pageUrl}#tenets`;
+
+    graph.push({
+      "@type": "ItemList",
+      "@id": itemListId,
+      name: `${site.doctrine.title} tenets`,
+      itemListOrder: "https://schema.org/ItemListOrderAscending",
+      numberOfItems: tenets.list.length,
+      itemListElement: tenets.list.map((tenet, index) => ({
+        "@type": "ListItem",
+        position: index + 1,
+        url: absoluteUrl(tenetUrl(tenet, lang)),
+        name: tenet.name[lang] || tenet.name[site.defaultLanguage]
+      }))
+    });
+
+    pageNode.about.push({
+      "@id": itemListId
+    });
+  }
 
   return JSON.stringify(
     {
@@ -114,9 +215,9 @@ module.exports = function(eleventyConfig) {
   eleventyConfig.on("eleventy.after", ({ dir }) => {
     const outputDir = dir?.output || "_site";
     const staleDirectories = [
-      path.join(outputDir, "tenets"),
+      path.join(outputDir, "json", "tenets"),
       ...site.languages.map((locale) =>
-        path.join(outputDir, trimSlashes(localePath(locale, "tenets")))
+        path.join(outputDir, "md", site.locales[locale].pathSegment)
       )
     ];
 

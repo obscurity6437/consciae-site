@@ -54,7 +54,8 @@
       <link rel="alternate" type="text/markdown" href="{{ site.machineReadable.markdownPaths[currentLang] | absoluteUrl }}">
     {% endif %}
     <link rel="alternate" type="application/json" href="{{ site.machineReadable.jsonPath | absoluteUrl }}">
-    <link rel="alternate" href="{{ site.machineReadable.yamlPath | absoluteUrl }}">
+    <link rel="alternate" type="application/yaml" href="{{ site.machineReadable.yamlPath | absoluteUrl }}">
+    <link rel="alternate" type="text/plain" href="{{ site.machineReadable.llmsPath | absoluteUrl }}">
     <meta property="og:site_name" content="{{ site.name }}">
     <meta property="og:title" content="{{ pageTitle }}">
     <meta property="og:description" content="{{ pageDescription }}">
@@ -138,11 +139,6 @@
               {{ localeCode | json | safe }}: {{ (localeCode | localeRoot) | json | safe }}{% if not loop.last %},{% endif %}
             {% endfor %}
           };
-          const browserLocales = {
-            {% for localeCode in site.languages %}
-              {{ localeCode | json | safe }}: {{ site.locales[localeCode].browserLocales | json | safe }}{% if not loop.last %},{% endif %}
-            {% endfor %}
-          };
 
           function redirectTo(path, localeCode) {
             if (!path || path === window.location.pathname) {
@@ -167,25 +163,6 @@
               return;
             }
           } catch (error) {
-          }
-
-          const requestedLocales = Array.from(navigator.languages || []);
-
-          if (navigator.language) {
-            requestedLocales.push(navigator.language);
-          }
-
-          const normalizedLocales = requestedLocales
-            .filter(Boolean)
-            .map((value) => value.toLowerCase());
-
-          for (const requestedLocale of normalizedLocales) {
-            for (const [localeCode, aliases] of Object.entries(browserLocales)) {
-              if (aliases.some((alias) => requestedLocale === alias || requestedLocale.startsWith(`${alias}-`))) {
-                redirectTo(localeRoots[localeCode], localeCode);
-                return;
-              }
-            }
           }
         })();
       </script>
