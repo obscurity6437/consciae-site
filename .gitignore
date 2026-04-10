@@ -31,6 +31,7 @@ vendor/bundle/
 
 # Static-site build output and caches
 _site/
+codedb.snapshot
 .jekyll-cache/
 .jekyll-metadata
 .sass-cache/
