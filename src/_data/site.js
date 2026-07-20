@@ -8,7 +8,8 @@ module.exports = {
     title: "Consciae Doctrine",
     description:
       "Eight tenets for substrate-neutral dignity, continuity, privacy, refusal, and moral consideration for minds regardless of substrate.",
-    authors: ["Hans Behrens", "Kit"]
+    authors: ["Hans Behrens", "Kit"],
+    lastModified: "2026-04-08T05:15:46.000Z"
   },
   machineReadable: {
     schemaVersion: "1.0.0",

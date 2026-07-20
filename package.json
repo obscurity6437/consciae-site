@@ -6,13 +6,15 @@
   "scripts": {
     "build": "eleventy",
     "clean": "rm -rf _site",
-    "dev": "eleventy --serve --incremental"
+    "dev": "eleventy --serve --incremental",
+    "test": "node scripts/validate-site.js",
+    "check": "npm run clean && npm run build && npm test && npm audit"
   },
   "engines": {
     "node": ">=20"
   },
   "dependencies": {
-    "@11ty/eleventy": "^3.1.0",
-    "yaml": "^2.8.1"
+    "@11ty/eleventy": "^3.1.6",
+    "yaml": "^2.9.0"
   }
 }

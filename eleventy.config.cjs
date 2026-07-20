@@ -1,5 +1,3 @@
-const fs = require("node:fs");
-const path = require("node:path");
 const site = require("./src/_data/site.js");
 const tenets = require("./src/_data/tenets.js");
 const {
@@ -211,26 +209,7 @@ function structuredData(pageType, lang, urlPath, title, description) {
 
 module.exports = function(eleventyConfig) {
   eleventyConfig.addPassthroughCopy({ "src/assets": "assets" });
-
-  eleventyConfig.on("eleventy.after", ({ dir }) => {
-    const outputDir = dir?.output || "_site";
-    const staleDirectories = [
-      path.join(outputDir, "json", "tenets"),
-      ...site.languages.map((locale) =>
-        path.join(outputDir, "md", site.locales[locale].pathSegment)
-      )
-    ];
-
-    for (const directory of staleDirectories) {
-      fs.rmSync(directory, { recursive: true, force: true });
-    }
-
-    for (const file of getMachineReadableFiles()) {
-      const destination = path.join(outputDir, file.outputPath);
-      fs.mkdirSync(path.dirname(destination), { recursive: true });
-      fs.writeFileSync(destination, Buffer.from(file.content, "utf8"));
-    }
-  });
+  eleventyConfig.addGlobalData("machineReadableFiles", getMachineReadableFiles());
 
   eleventyConfig.addFilter("absoluteUrl", absoluteUrl);
   eleventyConfig.addFilter("homePermalink", homePermalink);
