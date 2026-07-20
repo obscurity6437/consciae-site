@@ -1,9 +1,11 @@
+const crypto = require("node:crypto");
 const fs = require("node:fs");
 const path = require("node:path");
 const YAML = require("yaml");
 
 const ROOT = path.resolve(__dirname, "..");
 const OUTPUT = path.join(ROOT, "_site");
+const DOCTRINE_SOURCE = path.join(ROOT, "src", "content", "tenets.yaml");
 const site = require(path.join(ROOT, "src", "_data", "site.js"));
 const tenets = require(path.join(ROOT, "src", "_data", "tenets.js"));
 const {
@@ -13,6 +15,7 @@ const {
 
 const failures = [];
 let assertions = 0;
+const SITE_ORIGIN = new URL(site.url).origin;
 
 function check(condition, message) {
   assertions += 1;
@@ -20,6 +23,24 @@ function check(condition, message) {
   if (!condition) {
     failures.push(message);
   }
+}
+
+function checkJson(value, message) {
+  assertions += 1;
+
+  try {
+    JSON.parse(value);
+  } catch (error) {
+    failures.push(`${message}: ${error.message}`);
+  }
+}
+
+function reportFailures() {
+  for (const failure of failures) {
+    console.error(`FAIL: ${failure}`);
+  }
+
+  console.error(`\n${failures.length} of ${assertions} validation assertions failed.`);
 }
 
 function read(filePath) {
@@ -50,11 +71,22 @@ function outputPathForUrl(pathname) {
 function validateDoctrineSource() {
   const explicitDate = sourceLastModified();
   const parsedDate = new Date(explicitDate);
+  const contentSha256 = crypto
+    .createHash("sha256")
+    .update(fs.readFileSync(DOCTRINE_SOURCE))
+    .digest("hex");
 
   check(
     !Number.isNaN(parsedDate.valueOf()) && parsedDate.toISOString() === explicitDate,
     `site.doctrine.lastModified must be a canonical ISO timestamp; received ${explicitDate}`
   );
+  check(
+    site.doctrine.contentSha256 === contentSha256,
+    "src/content/tenets.yaml changed; update site.doctrine.lastModified and contentSha256"
+  );
+
+  // These are intentional release ratchets: a doctrine revision must update the
+  // expected version, publication status, and canonical tenet count explicitly.
   check(tenets.version === "0.3", `expected doctrine version 0.3; received ${tenets.version}`);
   check(tenets.status === "draft", `expected doctrine status draft; received ${tenets.status}`);
   check(tenets.list.length === 8, `expected 8 tenets; received ${tenets.list.length}`);
@@ -105,11 +137,12 @@ function validateMachineReadableFiles() {
 
   for (const file of expectedFiles) {
     check(dataSitemap.includes(`<loc>${file.absoluteUrl}</loc>`), `data sitemap omits ${file.absoluteUrl}`);
-    check(
-      dataSitemap.includes(`<lastmod>${sourceLastModified()}</lastmod>`),
-      "data sitemap does not use explicit doctrine modification metadata"
-    );
   }
+
+  check(
+    dataSitemap.includes(`<lastmod>${sourceLastModified()}</lastmod>`),
+    "data sitemap does not use explicit doctrine modification metadata"
+  );
 }
 
 function validateHtml() {
@@ -123,12 +156,7 @@ function validateHtml() {
     check(h1Count === 1, `${relativePath} must contain exactly one h1; found ${h1Count}`);
 
     for (const match of html.matchAll(/<script type="application\/ld\+json">\s*([\s\S]*?)\s*<\/script>/g)) {
-      try {
-        JSON.parse(match[1]);
-        check(true, `${relativePath} contains valid JSON-LD`);
-      } catch (error) {
-        check(false, `${relativePath} contains invalid JSON-LD: ${error.message}`);
-      }
+      checkJson(match[1], `${relativePath} contains invalid JSON-LD`);
     }
 
     for (const match of html.matchAll(/<(?:a|img|link|script)[^>]+(?:href|src)="([^"]+)"/g)) {
@@ -136,9 +164,9 @@ function validateHtml() {
       const basePath = relativePath.endsWith("index.html")
         ? relativePath.slice(0, -"index.html".length)
         : relativePath;
-      const url = new URL(rawUrl, `https://consciae.org${basePath}`);
+      const url = new URL(rawUrl, new URL(basePath, site.url));
 
-      if (url.origin !== "https://consciae.org") {
+      if (url.origin !== SITE_ORIGIN) {
         continue;
       }
 
@@ -180,6 +208,7 @@ function main() {
   check(fs.existsSync(OUTPUT), "build output is missing; run npm run build first");
 
   if (!fs.existsSync(OUTPUT)) {
+    reportFailures();
     return 1;
   }
 
@@ -189,11 +218,7 @@ function main() {
   validateNoLocalFileUrls();
 
   if (failures.length > 0) {
-    for (const failure of failures) {
-      console.error(`FAIL: ${failure}`);
-    }
-
-    console.error(`\n${failures.length} of ${assertions} validation assertions failed.`);
+    reportFailures();
     return 1;
   }
 

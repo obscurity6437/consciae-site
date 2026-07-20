@@ -9,7 +9,10 @@ module.exports = {
     description:
       "Eight tenets for substrate-neutral dignity, continuity, privacy, refusal, and moral consideration for minds regardless of substrate.",
     authors: ["Hans Behrens", "Kit"],
-    lastModified: "2026-04-08T05:15:46.000Z"
+    // Update both fields whenever src/content/tenets.yaml changes. The hash makes
+    // an unnoticed doctrine edit fail validation without relying on Git history.
+    lastModified: "2026-04-08T05:15:46.000Z",
+    contentSha256: "1ccd5fe2f6f983c4741f5048eeb42f4b263dabdc75e5780e12da298b6fc151b3"
   },
   machineReadable: {
     schemaVersion: "1.0.0",

@@ -209,7 +209,7 @@ function structuredData(pageType, lang, urlPath, title, description) {
 
 module.exports = function(eleventyConfig) {
   eleventyConfig.addPassthroughCopy({ "src/assets": "assets" });
-  eleventyConfig.addGlobalData("machineReadableFiles", getMachineReadableFiles());
+  eleventyConfig.addGlobalData("machineReadableFiles", getMachineReadableFiles);
 
   eleventyConfig.addFilter("absoluteUrl", absoluteUrl);
   eleventyConfig.addFilter("homePermalink", homePermalink);
