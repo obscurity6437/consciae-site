@@ -29,7 +29,7 @@ function cleanText(value) {
 }
 
 function sourceLastModified() {
-  return fs.statSync(sourcePath).mtime.toISOString();
+  return site.doctrine.lastModified;
 }
 
 function doctrineAuthors() {

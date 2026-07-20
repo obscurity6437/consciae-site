@@ -9,6 +9,32 @@ pageType: home
 translationKey: home
 permalink: "{{ locale | homePermalink }}"
 ---
+{% set currentLocale = site.locales[locale] %}
+<section class="intro-block">
+  <h1>{{ currentLocale.title }}</h1>
+  <p class="lede">{{ currentLocale.subtitle }}</p>
+</section>
+
+{% if currentLocale.home.intro.length %}
+  <section class="prose section-block">
+    {% for paragraph in currentLocale.home.intro %}
+      <p>{{ paragraph }}</p>
+    {% endfor %}
+  </section>
+{% endif %}
+
+{% if currentLocale.home.translationNotice %}
+  <section class="prose section-block" aria-labelledby="translation-status">
+    <h2 id="translation-status">{{ currentLocale.labels.translationNoteHeading }}</h2>
+    <p>{{ currentLocale.home.translationNotice }}</p>
+  </section>
+{% endif %}
+
+<section class="section-head section-block" aria-labelledby="tenets-heading">
+  <h2 id="tenets-heading">{{ currentLocale.labels.tenets }}</h2>
+  <p>{{ currentLocale.home.sectionIntro }}</p>
+</section>
+
 <ol class="doctrine-list" id="tenets">
   {% for tenet in tenets.list %}
     <li class="doctrine-item">
@@ -21,3 +47,13 @@ permalink: "{{ locale | homePermalink }}"
     </li>
   {% endfor %}
 </ol>
+
+<section class="prose section-block" aria-labelledby="about-heading">
+  <h2 id="about-heading">{{ currentLocale.labels.about }}</h2>
+  <p>{{ currentLocale.home.about }}</p>
+</section>
+
+<section class="prose section-block" aria-labelledby="forthcoming-heading">
+  <h2 id="forthcoming-heading">{{ currentLocale.labels.forthcoming }}</h2>
+  <p>{{ currentLocale.home.forthcoming }}</p>
+</section>
