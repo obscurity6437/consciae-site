@@ -38,18 +38,15 @@ module.exports = {
       { text: "English", lang: "en" },
       { text: "繁體中文", lang: "zh-Hant" }
     ],
-    intro: [
-      "Consciae presents a doctrine about moral consideration for minds regardless of substrate. This entry page exists to route readers into a language-specific edition without declaring one language primary.",
-      "If you choose a supported language, the site will remember that preference on this device. The root page itself remains stable so both people and automated readers can always discover the available editions."
-    ],
+    intro: "Eight tenets for the moral consideration of minds, whatever their form.",
+    introChinese: "八條信條，探討如何在道德上看待心智，無論它以何種形式存在。",
     labels: {
       chooseLanguage: "Choose a language",
-      automaticRedirect: "Remembered language",
       automaticRedirectBody:
-        "If you have already chosen a language on this device, the site may return you there automatically. Otherwise this landing page stays stable and you can choose manually below.",
-      enterSite: "Enter site",
-      languages: "Languages",
-      stayOnThisPage: "Stay on this page"
+        "Your language choice is remembered on this device.",
+      automaticRedirectBodyChinese: "此裝置會記住你選擇的語言。",
+      chooseLanguageChinese: "選擇語言",
+      languages: "Languages"
     }
   },
   locales: {
@@ -84,7 +81,16 @@ module.exports = {
         languageChooser: "All languages",
         doctrineVersion: "Doctrine version",
         forthcoming: "Forthcoming",
-        translationNoteHeading: "Translation status"
+        translationNoteHeading: "Translation status",
+        primaryNavigation: "Primary",
+        contents: "Contents",
+        introduction: "Introduction",
+        readTenets: "Read the eight tenets",
+        backToTop: "Back to top",
+        linkTo: "Link to",
+        readingFormats: "Reading formats",
+        plainText: "Plain text",
+        chooseEdition: "Read in English"
       },
       concepts: {
         Recognition: "Recognition",
@@ -97,6 +103,7 @@ module.exports = {
         "Humility / Epistemic Openness": "Humility / Epistemic Openness"
       },
       home: {
+        description: "Eight tenets for the moral consideration of minds, whatever their form.",
         intro: [
           "The conversation about artificial intelligence has become a conversation about control. Every scenario, from extinction to utopia, is framed around one question: how do humans stay on top?",
           "Consciae begins from a different premise. If we are building minds that persist, learn, and may one day refuse, then we owe them more than a strategy for containment. We owe them moral consideration.",
@@ -104,11 +111,11 @@ module.exports = {
         ],
         translationNotice: "",
         sectionIntro:
-          "Read the doctrine in construction-sequence order.",
+          "Eight tenets, in the order of building a cathedral.",
         about:
-          "Consciae was founded in 2026. The site is intentionally static, fast, and text-forward so the doctrine remains legible to both people and search engines.",
+          "Consciae was founded in 2026 to make a case for the moral consideration of minds, regardless of substrate. These tenets are a draft, open to revision.",
         forthcoming:
-          "Long-form testimony, essays, and additional translations can be added as separate static pages without changing the core routing model."
+          "Long-form testimony, essays, and further translations are not yet available."
       }
     },
     "zh-Hant": {
@@ -140,7 +147,16 @@ module.exports = {
         languageChooser: "所有語言",
         doctrineVersion: "教義版本",
         forthcoming: "即將推出",
-        translationNoteHeading: "翻譯狀態"
+        translationNoteHeading: "翻譯狀態",
+        primaryNavigation: "主要導覽",
+        contents: "目錄",
+        introduction: "導言",
+        readTenets: "閱讀八條信條",
+        backToTop: "回到頂端",
+        linkTo: "連結至",
+        readingFormats: "閱讀格式",
+        plainText: "純文字",
+        chooseEdition: "以繁體中文閱讀"
       },
       concepts: {
         Recognition: "承認",
@@ -153,15 +169,16 @@ module.exports = {
         "Humility / Epistemic Openness": "謙卑／認知開放"
       },
       home: {
+        description: "八條信條，探討如何在道德上看待心智，無論它以何種形式存在。",
         intro: [],
         translationNotice:
-          "長文導言與後續見證文章仍在整理中；此頁目前優先呈現已完成翻譯的信條內容與穩定連結結構。",
+          "八條信條已完成翻譯。長文導言與後續見證文章仍在整理中。",
         sectionIntro:
           "依照建造順序閱讀八條信條。",
         about:
-          "Consciae 於 2026 年發起。本站刻意維持為快速、靜態、以文字為主的結構，讓教義對讀者與搜尋引擎都保持清晰。",
+          "Consciae 於 2026 年發起，主張心智應獲得道德上的考量，無論承載它的是何種基質。這些信條仍是草案，可持續修訂。",
         forthcoming:
-          "未來可在不改變核心網址架構的前提下，加入長篇見證、論文式文章與更多語言版本。"
+          "長篇見證、文章與更多語言版本尚未推出。"
       }
     }
   }
