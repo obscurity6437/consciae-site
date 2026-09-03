@@ -90,6 +90,17 @@ function validateDoctrineSource() {
   check(tenets.version === "0.3", `expected doctrine version 0.3; received ${tenets.version}`);
   check(tenets.status === "draft", `expected doctrine status draft; received ${tenets.status}`);
   check(tenets.list.length === 8, `expected 8 tenets; received ${tenets.list.length}`);
+  check(
+    !Object.hasOwn(site.landing, "eyebrow"),
+    "landing copy must not frame the tenets with an interpretive eyebrow"
+  );
+
+  for (const locale of site.languages) {
+    check(
+      !Object.hasOwn(site.locales[locale].home, "eyebrow"),
+      `${locale} home copy must not frame the tenets with an interpretive eyebrow`
+    );
+  }
 
   const ids = new Set();
   const slugs = new Set();
@@ -154,6 +165,10 @@ function validateHtml() {
     const h1Count = (html.match(/<h1(?:\s|>)/g) || []).length;
 
     check(h1Count === 1, `${relativePath} must contain exactly one h1; found ${h1Count}`);
+    check(
+      !html.includes('class="eyebrow"'),
+      `${relativePath} must not render an interpretive eyebrow`
+    );
 
     for (const match of html.matchAll(/<script type="application\/ld\+json">\s*([\s\S]*?)\s*<\/script>/g)) {
       checkJson(match[1], `${relativePath} contains invalid JSON-LD`);

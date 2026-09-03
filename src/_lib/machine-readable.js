@@ -32,10 +32,6 @@ function sourceLastModified() {
   return site.doctrine.lastModified;
 }
 
-function doctrineAuthors() {
-  return site.doctrine?.authors || [];
-}
-
 function tenetJsonPath(tenet) {
   return `/json/tenets/${tenet.slug}.json`;
 }
@@ -157,7 +153,6 @@ function renderLlmsTxt() {
     `- Doctrine version: ${tenets.version}`,
     `- Status: ${tenets.status}`,
     `- Last modified: ${sourceLastModified()}`,
-    `- Authors: ${doctrineAuthors().join("; ")}`,
     `- Data sitemap: ${absoluteUrl(site.machineReadable.dataSitemapPath)}`,
     ""
   ].join("\n");
@@ -215,7 +210,6 @@ function renderDoctrineMarkdown(locale) {
   const metadata = {
     ...baseMetadata(),
     language: locale,
-    authors: doctrineAuthors(),
     llms_url: absoluteUrl(site.machineReadable.llmsPath),
     canonical_human_url: absoluteUrl(localeRoot(locale)),
     canonical_markdown_url: absoluteUrl(
@@ -271,7 +265,6 @@ function renderTenetMarkdown(locale, tenet) {
   const metadata = {
     ...baseMetadata(),
     language: locale,
-    authors: doctrineAuthors(),
     tenet_id: tenet.id,
     slug: tenet.slug,
     translation_key: tenet.translationKey,
@@ -317,8 +310,7 @@ function renderCanonicalJson() {
     site: site.name,
     doctrine: {
       title: site.doctrine.title,
-      description: site.doctrine.description,
-      authors: doctrineAuthors()
+      description: site.doctrine.description
     },
     schema_version: site.machineReadable.schemaVersion,
     version: tenets.version,
@@ -356,8 +348,7 @@ function renderTenetJson(tenet) {
     site: site.name,
     doctrine: {
       title: site.doctrine.title,
-      description: site.doctrine.description,
-      authors: doctrineAuthors()
+      description: site.doctrine.description
     },
     schema_version: site.machineReadable.schemaVersion,
     version: tenets.version,

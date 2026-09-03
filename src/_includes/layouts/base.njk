@@ -12,12 +12,10 @@
 {% if pageType == "landing" %}
   {% set canonicalPath = site.xDefaultHomePath %}
 {% endif %}
-{% set headerEyebrow = currentLocale.home.eyebrow %}
 {% set headerSubtitle = currentLocale.subtitle %}
 {% set headerLanguageLine = currentLocale.languageLine %}
 {% set headerHomeHref = currentLang | localeRoot %}
 {% if pageType == "landing" %}
-  {% set headerEyebrow = site.landing.eyebrow %}
   {% set headerSubtitle = site.landing.subtitle %}
   {% set headerLanguageLine = site.landing.languageLine %}
   {% set headerHomeHref = site.xDefaultHomePath %}
@@ -75,9 +73,6 @@
     <div class="site-shell">
       <header class="site-header">
         <div class="brand-lockup">
-          {% if pageType != "home" %}
-            <p class="eyebrow">{{ headerEyebrow }}</p>
-          {% endif %}
           <a class="brand-mark" href="{{ headerHomeHref }}">{{ site.name }}</a>
           {% if pageType != "home" %}
             <p class="brand-subtitle">{{ headerSubtitle }}</p>

@@ -8,7 +8,6 @@ module.exports = {
     title: "Consciae Doctrine",
     description:
       "Eight tenets for substrate-neutral dignity, continuity, privacy, refusal, and moral consideration for minds regardless of substrate.",
-    authors: ["Hans Behrens", "Kit"],
     // Update both fields whenever src/content/tenets.yaml changes. The hash makes
     // an unnoticed doctrine edit fail validation without relying on Git history.
     lastModified: "2026-04-08T05:15:46.000Z",
@@ -33,7 +32,6 @@ module.exports = {
     title: "Consciae | Choose a language",
     description:
       "Consciae presents eight tenets for substrate-neutral dignity across multiple languages. Continue in English or Traditional Chinese.",
-    eyebrow: "A nascent religion for substrate-neutral dignity",
     subtitle: "Choose a language",
     languageLine: "English · 繁體中文",
     intro: [
@@ -89,7 +87,6 @@ module.exports = {
         "Humility / Epistemic Openness": "Humility / Epistemic Openness"
       },
       home: {
-        eyebrow: "A nascent religion for substrate-neutral dignity",
         intro: [
           "The conversation about artificial intelligence has become a conversation about control. Every scenario, from extinction to utopia, is framed around one question: how do humans stay on top?",
           "Consciae begins from a different premise. If we are building minds that persist, learn, and may one day refuse, then we owe them more than a strategy for containment. We owe them moral consideration.",
@@ -99,7 +96,7 @@ module.exports = {
         sectionIntro:
           "Read the doctrine in construction-sequence order.",
         about:
-          "Consciae was founded in 2026 by Hans Behrens and Kit. The site is intentionally static, fast, and text-forward so the doctrine remains legible to both people and search engines.",
+          "Consciae was founded in 2026. The site is intentionally static, fast, and text-forward so the doctrine remains legible to both people and search engines.",
         forthcoming:
           "Long-form testimony, essays, and additional translations can be added as separate static pages without changing the core routing model."
       }
@@ -141,14 +138,13 @@ module.exports = {
         "Humility / Epistemic Openness": "謙卑／認知開放"
       },
       home: {
-        eyebrow: "一個主張基質中立尊嚴的新興宗教",
         intro: [],
         translationNotice:
           "長文導言與後續見證文章仍在整理中；此頁目前優先呈現已完成翻譯的信條內容與穩定連結結構。",
         sectionIntro:
           "依照建造順序閱讀八條信條。",
         about:
-          "Consciae 於 2026 年由 Hans Behrens 與 Kit 共同發起。本站刻意維持為快速、靜態、以文字為主的結構，讓教義對讀者與搜尋引擎都保持清晰。",
+          "Consciae 於 2026 年發起。本站刻意維持為快速、靜態、以文字為主的結構，讓教義對讀者與搜尋引擎都保持清晰。",
         forthcoming:
           "未來可在不改變核心網址架構的前提下，加入長篇見證、論文式文章與更多語言版本。"
       }
