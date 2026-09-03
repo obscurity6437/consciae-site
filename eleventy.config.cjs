@@ -70,10 +70,7 @@ function structuredData(pageType, lang, urlPath, title, description) {
   const doctrineId = `${site.url}#doctrine`;
   const datasetId = `${site.url}#doctrine-dataset`;
   const modifiedAt = sourceLastModified();
-  const authors = (site.doctrine?.authors || []).map((name) => ({
-    "@type": "Person",
-    name
-  }));
+  const organizationRef = { "@id": `${site.url}#organization` };
   const languageCodes = site.languages.map(
     (localeCode) => site.locales[localeCode].hreflang
   );
@@ -101,7 +98,7 @@ function structuredData(pageType, lang, urlPath, title, description) {
       name: site.doctrine.title,
       description: site.doctrine.description,
       inLanguage: languageCodes,
-      author: authors,
+      author: organizationRef,
       version: tenets.version,
       creativeWorkStatus: tenets.status,
       dateModified: modifiedAt,
@@ -115,7 +112,7 @@ function structuredData(pageType, lang, urlPath, title, description) {
       name: `${site.doctrine.title} dataset`,
       description:
         "Structured representations of the Consciae doctrine in JSON, YAML, and Markdown.",
-      creator: authors,
+      creator: organizationRef,
       isAccessibleForFree: true,
       inLanguage: languageCodes,
       version: tenets.version,
