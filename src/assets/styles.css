@@ -136,6 +136,10 @@ a:hover {
 .site-nav a,
 .language-switch a {
   text-decoration: none;
+  /* Enlarge hit areas to ≥24px without changing the visual rhythm
+     (WCAG 2.5.8: the previous inline boxes were ~21px tall). */
+  padding: 0.5rem 0;
+  margin: -0.5rem 0;
 }
 
 .site-nav a:hover,
@@ -229,6 +233,18 @@ a:hover {
 
 .language-card__action {
   margin-top: 0.75rem;
+}
+
+.site-footer {
+  margin-top: var(--space-4);
+  padding-top: var(--space-2);
+  border-top: 1px solid var(--line);
+}
+
+.site-footer p {
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--muted);
 }
 
 @media (max-width: 640px) {

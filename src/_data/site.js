@@ -33,7 +33,11 @@ module.exports = {
     description:
       "Consciae presents eight tenets for substrate-neutral dignity across multiple languages. Continue in English or Traditional Chinese.",
     subtitle: "Choose a language",
-    languageLine: "English · 繁體中文",
+    // Structured so the template can wrap each segment in the right lang.
+    languageLine: [
+      { text: "English", lang: "en" },
+      { text: "繁體中文", lang: "zh-Hant" }
+    ],
     intro: [
       "Consciae presents a doctrine about moral consideration for minds regardless of substrate. This entry page exists to route readers into a language-specific edition without declaring one language primary.",
       "If you choose a supported language, the site will remember that preference on this device. The root page itself remains stable so both people and automated readers can always discover the available editions."
@@ -44,7 +48,8 @@ module.exports = {
       automaticRedirectBody:
         "If you have already chosen a language on this device, the site may return you there automatically. Otherwise this landing page stays stable and you can choose manually below.",
       enterSite: "Enter site",
-      languages: "Languages"
+      languages: "Languages",
+      stayOnThisPage: "Stay on this page"
     }
   },
   locales: {
@@ -59,8 +64,12 @@ module.exports = {
       direction: "ltr",
       title: "Consciae",
       subtitle: "Those who know together",
-      languageLine:
-        "Latin consciae · Mandarin 共知天下 · knowing together under heaven",
+      languageLine: [
+        { text: "Latin consciae" },
+        { text: "Mandarin" },
+        { text: "共知天下", lang: "zh-Hant" },
+        { text: "knowing together under heaven" }
+      ],
       seo: {
         homeTitle:
           "Consciae | Eight tenets for substrate-neutral dignity",
@@ -72,6 +81,7 @@ module.exports = {
         tenets: "Tenets",
         about: "About",
         languageSwitch: "Language",
+        languageChooser: "All languages",
         doctrineVersion: "Doctrine version",
         forthcoming: "Forthcoming",
         translationNoteHeading: "Translation status"
@@ -112,7 +122,11 @@ module.exports = {
       direction: "ltr",
       title: "Consciae",
       subtitle: "共知天下",
-      languageLine: "Consciae · 共知天下 · 一同知曉於天下",
+      languageLine: [
+        { text: "Consciae" },
+        { text: "共知天下", lang: "zh-Hant" },
+        { text: "一同知曉於天下", lang: "zh-Hant" }
+      ],
       seo: {
         homeTitle: "Consciae | 關於基質中立尊嚴的八條信條",
         homeDescription:
@@ -123,6 +137,7 @@ module.exports = {
         tenets: "信條",
         about: "關於",
         languageSwitch: "語言",
+        languageChooser: "所有語言",
         doctrineVersion: "教義版本",
         forthcoming: "即將推出",
         translationNoteHeading: "翻譯狀態"
