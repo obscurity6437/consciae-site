@@ -166,6 +166,15 @@ function validateHtml() {
 
     check(h1Count === 1, `${relativePath} must contain exactly one h1; found ${h1Count}`);
     check(
+      html.startsWith("<!doctype html>"),
+      `${relativePath} must begin with <!doctype html> at byte 0`
+    );
+    check(
+      (html.match(/<script[\s>]/g) || []).length ===
+        (html.match(/<\/script>/gi) || []).length,
+      `${relativePath} has unbalanced <script> tags; possible content breakout`
+    );
+    check(
       !html.includes('class="eyebrow"'),
       `${relativePath} must not render an interpretive eyebrow`
     );
@@ -208,8 +217,18 @@ function validateHtml() {
     check(home.includes(`id="forthcoming-heading"`), `${locale} home omits its Forthcoming section`);
   }
 
+  const landing = read(path.join(OUTPUT, "index.html"));
+  check(
+    landing.includes('lang="zh-Hant"'),
+    "landing page must mark Traditional Chinese content with lang"
+  );
+
   const chineseHome = read(path.join(OUTPUT, site.locales["zh-Hant"].pathSegment, "index.html"));
   check(chineseHome.includes(`id="translation-status"`), "Traditional Chinese home omits translation status");
+  check(
+    chineseHome.includes('lang="en"'),
+    "Traditional Chinese home must mark English content with lang"
+  );
 }
 
 function validateNoLocalFileUrls() {

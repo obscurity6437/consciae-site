@@ -194,6 +194,8 @@ function structuredData(pageType, lang, urlPath, title, description) {
     });
   }
 
+  // Escaping `<` keeps any future content edit from closing the surrounding
+  // <script> element; `\u003c` parses back to `<` for every JSON consumer.
   return JSON.stringify(
     {
       "@context": "https://schema.org",
@@ -201,7 +203,7 @@ function structuredData(pageType, lang, urlPath, title, description) {
     },
     null,
     2
-  );
+  ).replace(/</g, "\\u003c");
 }
 
 module.exports = function(eleventyConfig) {
@@ -212,7 +214,11 @@ module.exports = function(eleventyConfig) {
   eleventyConfig.addFilter("homePermalink", homePermalink);
   eleventyConfig.addFilter("localeRoot", localePath);
   eleventyConfig.addFilter("tenetUrl", tenetUrl);
-  eleventyConfig.addFilter("json", (value) => JSON.stringify(value, null, 2));
+  // Same `<` escaping as structuredData: this filter output is embedded in
+  // inline <script> blocks with | safe, so it must never emit `</script>`.
+  eleventyConfig.addFilter("json", (value) =>
+    JSON.stringify(value, null, 2).replace(/</g, "\\u003c")
+  );
   eleventyConfig.addFilter("tenetLabel", (id, locale) => {
     if (locale === "zh-Hant") {
       return `第 ${id} 信條`;
@@ -233,10 +239,6 @@ module.exports = function(eleventyConfig) {
       .filter((item) => item.url && !item.data.excludeFromSitemap)
       .sort((left, right) => left.url.localeCompare(right.url))
   );
-
-  eleventyConfig.addGlobalData("build", {
-    generatedAt: new Date().toISOString()
-  });
 
   eleventyConfig.addGlobalData("helpers", {
     localeCode,
