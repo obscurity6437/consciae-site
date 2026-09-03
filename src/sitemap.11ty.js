@@ -1,4 +1,5 @@
 const site = require("./_data/site.js");
+const { sourceLastModified } = require("./_lib/machine-readable.js");
 
 function xmlEscape(value) {
   return value
@@ -83,7 +84,6 @@ module.exports = class Sitemap {
 
     for (const group of groups.values()) {
       for (const page of group) {
-        const lang = localeFromItem(page);
         const loc = new URL(page.url, site.url).toString();
         const alternates = alternateLinksForGroup(group)
           .map(
@@ -96,7 +96,7 @@ module.exports = class Sitemap {
     <loc>${xmlEscape(loc)}</loc>
 ${alternates}
     <xhtml:link rel="alternate" hreflang="x-default" href="${xmlEscape(xDefaultForGroup(group))}" />
-    <changefreq>${lang === site.defaultLanguage ? "weekly" : "monthly"}</changefreq>
+    <lastmod>${xmlEscape(sourceLastModified())}</lastmod>
   </url>`);
       }
     }

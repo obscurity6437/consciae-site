@@ -26,7 +26,6 @@ module.exports = class DataSitemap {
         (file) => `  <url>
     <loc>${xmlEscape(file.absoluteUrl)}</loc>
     <lastmod>${xmlEscape(file.lastModified)}</lastmod>
-    <changefreq>weekly</changefreq>
   </url>`
       );
 
