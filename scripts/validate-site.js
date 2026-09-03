@@ -163,8 +163,14 @@ function validateHtml() {
     const html = read(filePath);
     const relativePath = `/${path.relative(OUTPUT, filePath).split(path.sep).join("/")}`;
     const h1Count = (html.match(/<h1(?:\s|>)/g) || []).length;
+    const elementIds = [...html.matchAll(/\bid="([^"]+)"/g)].map((match) => match[1]);
 
     check(h1Count === 1, `${relativePath} must contain exactly one h1; found ${h1Count}`);
+    check(new Set(elementIds).size === elementIds.length, `${relativePath} has duplicate element ids`);
+    check(
+      html.includes('<main id="main-content" tabindex="-1">'),
+      `${relativePath} skip-link target must accept keyboard focus`
+    );
     check(
       html.startsWith("<!doctype html>"),
       `${relativePath} must begin with <!doctype html> at byte 0`
@@ -215,12 +221,41 @@ function validateHtml() {
     check(tenetCount === tenets.list.length, `${locale} home renders ${tenetCount} of ${tenets.list.length} tenets`);
     check(home.includes(`id="about-heading"`), `${locale} home omits its About section`);
     check(home.includes(`id="forthcoming-heading"`), `${locale} home omits its Forthcoming section`);
+    check(home.includes('<details class="contents" open>'), `${locale} contents must work without JavaScript`);
+    check(
+      (home.match(/\bdata-toc-link\b/g) || []).length === tenets.list.length + 2,
+      `${locale} contents must link to the introduction, every tenet and About`
+    );
+    check(home.includes('src="/assets/reader.js" defer'), `${locale} home omits reader enhancement`);
+
+    const normalize = (value) => value.replace(/\s+/g, " ").trim();
+    for (const tenet of tenets.list) {
+      const article = home.match(new RegExp(`<article id="tenet-${tenet.slug}"[\\s\\S]*?<\\/article>`))?.[0] || "";
+      check(article.includes('tabindex="-1"'), `${locale} tenet ${tenet.id} must accept focus after navigation`);
+      check(article.includes(`<h3 id="tenet-${tenet.slug}-title">`), `${locale} tenet ${tenet.id} has an invalid heading level`);
+      check(article.includes('class="tenet-permalink"'), `${locale} tenet ${tenet.id} omits a visible permalink`);
+      check(home.includes(`href="#tenet-${tenet.slug}" data-toc-link`), `${locale} contents omits tenet ${tenet.id}`);
+      for (const field of ["name", "short", "gloss"]) {
+        check(
+          normalize(article).includes(normalize(tenet[field][locale])),
+          `${locale} tenet ${tenet.id} must retain the full source ${field}`
+        );
+      }
+      check(
+        typeof site.locales[locale].concepts[tenet.concept] === "string",
+        `${locale} contents needs a translated concept for tenet ${tenet.id}`
+      );
+    }
   }
 
   const landing = read(path.join(OUTPUT, "index.html"));
   check(
     landing.includes('lang="zh-Hant"'),
     "landing page must mark Traditional Chinese content with lang"
+  );
+  check(
+    (landing.match(/class="language-choice"/g) || []).length === site.languages.length,
+    "landing page must offer one full clickable choice per language"
   );
 
   const chineseHome = read(path.join(OUTPUT, site.locales["zh-Hant"].pathSegment, "index.html"));

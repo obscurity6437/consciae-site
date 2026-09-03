@@ -10,50 +10,82 @@ translationKey: home
 permalink: "{{ locale | homePermalink }}"
 ---
 {% set currentLocale = site.locales[locale] %}
-<section class="intro-block">
-  <h1>{{ currentLocale.title }}</h1>
-  <p class="lede">{{ currentLocale.subtitle }}</p>
-</section>
+<div class="reader-layout">
+  <aside class="contents-rail">
+    <details class="contents" open>
+      <summary>{{ currentLocale.labels.contents }}</summary>
+      <nav aria-label="{{ currentLocale.labels.contents }}">
+        <a class="contents-bookend" href="#introduction" data-toc-link>{{ currentLocale.labels.introduction }}</a>
+        <ol class="contents-list">
+          {% for tenet in tenets.list %}
+            <li>
+              <a href="#tenet-{{ tenet.slug }}" data-toc-link>
+                <span class="contents-number" aria-hidden="true">{{ tenet.id }}</span>
+                <span>{{ currentLocale.concepts[tenet.concept] or tenet.concept }}</span>
+              </a>
+            </li>
+          {% endfor %}
+        </ol>
+        <a class="contents-bookend" href="#about" data-toc-link>{{ currentLocale.labels.about }}</a>
+      </nav>
+    </details>
+  </aside>
 
-{% if currentLocale.home.intro.length %}
-  <section class="prose section-block">
-    {% for paragraph in currentLocale.home.intro %}
-      <p>{{ paragraph }}</p>
-    {% endfor %}
-  </section>
-{% endif %}
+  <div class="reading-column">
+    <section class="reading-intro" id="introduction" aria-labelledby="intro-heading" tabindex="-1" data-reading-section>
+      <h1 id="intro-heading">{{ currentLocale.subtitle }}</h1>
+      <p class="lede">{{ currentLocale.home.description }}</p>
+      <a class="reading-start" href="#tenets">{{ currentLocale.labels.readTenets }} <span aria-hidden="true">↓</span></a>
 
-{% if currentLocale.home.translationNotice %}
-  <section class="prose section-block" aria-labelledby="translation-status">
-    <h2 id="translation-status">{{ currentLocale.labels.translationNoteHeading }}</h2>
-    <p>{{ currentLocale.home.translationNotice }}</p>
-  </section>
-{% endif %}
+      {% if currentLocale.home.intro.length %}
+        <div class="prose introduction-copy">
+          {% for paragraph in currentLocale.home.intro %}
+            <p>{{ paragraph }}</p>
+          {% endfor %}
+        </div>
+      {% endif %}
 
-<section class="section-head section-block" aria-labelledby="tenets-heading">
-  <h2 id="tenets-heading">{{ currentLocale.labels.tenets }}</h2>
-  <p>{{ currentLocale.home.sectionIntro }}</p>
-</section>
+      {% if currentLocale.home.translationNotice %}
+        <aside class="translation-note" aria-labelledby="translation-status">
+          <h2 id="translation-status">{{ currentLocale.labels.translationNoteHeading }}</h2>
+          <p>{{ currentLocale.home.translationNotice }}</p>
+        </aside>
+      {% endif %}
+    </section>
 
-<ol class="doctrine-list" id="tenets">
-  {% for tenet in tenets.list %}
-    <li class="doctrine-item">
-      <article id="tenet-{{ tenet.slug }}" aria-labelledby="tenet-{{ tenet.slug }}-title">
-        <p class="tenet-kicker">{{ tenet.id | tenetLabel(locale) }}</p>
-        <h2 id="tenet-{{ tenet.slug }}-title">{{ tenet.name[locale] or tenet.name[site.defaultLanguage] }}</h2>
-        <p class="tenet-short">{{ tenet.short[locale] or tenet.short[site.defaultLanguage] }}</p>
-        <p class="tenet-gloss">{{ tenet.gloss[locale] or tenet.gloss[site.defaultLanguage] }}</p>
-      </article>
-    </li>
-  {% endfor %}
-</ol>
+    <section class="tenets-section" id="tenets" aria-labelledby="tenets-heading" tabindex="-1">
+      <div class="section-head">
+        <h2 id="tenets-heading">{{ currentLocale.labels.tenets }}</h2>
+        <p>{{ currentLocale.home.sectionIntro }}</p>
+      </div>
+      <ol class="doctrine-list">
+        {% for tenet in tenets.list %}
+          <li class="doctrine-item">
+            <article id="tenet-{{ tenet.slug }}" aria-labelledby="tenet-{{ tenet.slug }}-title" tabindex="-1" data-reading-section>
+              <p class="tenet-kicker">{{ tenet.id | tenetLabel(locale) }} <span aria-hidden="true">/</span> {{ currentLocale.concepts[tenet.concept] or tenet.concept }}</p>
+              <div class="tenet-heading">
+                <h3 id="tenet-{{ tenet.slug }}-title">{{ tenet.name[locale] or tenet.name[site.defaultLanguage] }}</h3>
+                <a class="tenet-permalink" href="#tenet-{{ tenet.slug }}" aria-label="{{ currentLocale.labels.linkTo }} {{ tenet.id | tenetLabel(locale) }}"><span aria-hidden="true">§</span></a>
+              </div>
+              <p class="tenet-short">{{ tenet.short[locale] or tenet.short[site.defaultLanguage] }}</p>
+              <p class="tenet-gloss">{{ tenet.gloss[locale] or tenet.gloss[site.defaultLanguage] }}</p>
+            </article>
+          </li>
+        {% endfor %}
+      </ol>
+    </section>
 
-<section class="prose section-block" aria-labelledby="about-heading">
-  <h2 id="about-heading">{{ currentLocale.labels.about }}</h2>
-  <p>{{ currentLocale.home.about }}</p>
-</section>
-
-<section class="prose section-block" aria-labelledby="forthcoming-heading">
-  <h2 id="forthcoming-heading">{{ currentLocale.labels.forthcoming }}</h2>
-  <p>{{ currentLocale.home.forthcoming }}</p>
-</section>
+    <section class="about-section prose" id="about" aria-labelledby="about-heading" tabindex="-1" data-reading-section>
+      <h2 id="about-heading">{{ currentLocale.labels.about }}</h2>
+      <p>{{ currentLocale.home.about }}</p>
+      <h3 id="forthcoming-heading">{{ currentLocale.labels.forthcoming }}</h3>
+      <p>{{ currentLocale.home.forthcoming }}</p>
+      <nav class="reading-formats" aria-label="{{ currentLocale.labels.readingFormats }}">
+        <a href="{{ site.machineReadable.markdownPaths[locale] }}">{{ currentLocale.labels.plainText }}</a>
+        <a href="{{ site.machineReadable.jsonPath }}" lang="en">JSON</a>
+        <a href="{{ site.machineReadable.yamlPath }}" lang="en">YAML</a>
+      </nav>
+      <a class="back-to-top" href="#introduction">{{ currentLocale.labels.backToTop }} <span aria-hidden="true">↑</span></a>
+    </section>
+  </div>
+</div>

@@ -26,12 +26,18 @@ npm run check  # clean + build + validate — the gate CI runs before deploy
 | --- | --- |
 | `npm run dev` | Eleventy dev server (`--serve --incremental`) |
 | `npm run build` | Build `_site/` |
-| `npm test` | Run `scripts/validate-site.js` against `_site/` |
+| `npm test` | Validate `_site/` and run the reader/navigation regression tests |
 | `npm run check` | `clean && build && test` — the deploy gate |
 | `npm run audit` | `npm audit --audit-level=high` (weekly, non-blocking, in CI) |
 | `npm run clean` | Remove `_site/` |
 
 ## Editing the doctrine
+
+The reader uses a contents rail on desktop and a collapsible contents menu
+on smaller screens. All tenets and section links work without JavaScript;
+`src/assets/reader.js` adds current-section highlighting and mobile focus
+handling. Language links retain a selected reading fragment. Layout, colour,
+and print styles live in `src/assets/styles.css`.
 
 `src/content/tenets.yaml` is the single source of truth for the tenets. A
 release ratchet protects it: the validator compares the `contentSha256` in

@@ -12,12 +12,8 @@
 {%- if pageType == "landing" -%}
   {%- set canonicalPath = site.xDefaultHomePath -%}
 {% endif -%}
-{%- set headerSubtitle = currentLocale.subtitle -%}
-{%- set headerLanguageLine = currentLocale.languageLine -%}
 {%- set headerHomeHref = currentLang | localeRoot -%}
 {%- if pageType == "landing" -%}
-  {%- set headerSubtitle = site.landing.subtitle -%}
-  {%- set headerLanguageLine = site.landing.languageLine -%}
   {#- The landing brand link must not re-trigger the locale redirect. -#}
   {%- set headerHomeHref = site.xDefaultHomePath ~ "?stay=1" -%}
 {% endif -%}
@@ -28,7 +24,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{{ pageTitle }}</title>
     <meta name="description" content="{{ pageDescription }}">
-    <meta name="theme-color" content="#13211d">
+    <meta name="theme-color" content="#f6f2ea" media="(prefers-color-scheme: light)">
+    <meta name="theme-color" content="#191b18" media="(prefers-color-scheme: dark)">
     {% if excludeFromSitemap %}
       <meta name="robots" content="noindex, nofollow">
     {% endif %}
@@ -74,45 +71,61 @@
     <div class="site-shell">
       <header class="site-header">
         <div class="brand-lockup">
-          <a class="brand-mark" href="{{ headerHomeHref }}">{{ site.name }}</a>
-          {% if pageType != "home" %}
-            <p class="brand-subtitle">{{ headerSubtitle }}</p>
-            <p class="language-line">{%- for part in headerLanguageLine -%}
-              {%- if not loop.first %} · {% endif -%}
-              {%- if part.lang -%}<span lang="{{ part.lang }}">{{ part.text }}</span>{%- else -%}{{ part.text }}{%- endif -%}
-            {%- endfor -%}</p>
-          {% endif %}
+          <a class="brand-mark" href="{{ headerHomeHref }}" lang="en">{{ site.name }}</a>
         </div>
-        {% if pageType == "landing" %}
-          <nav class="site-nav" aria-label="Primary">
-            <a href="#languages">{{ site.landing.labels.chooseLanguage }}</a>
+        {% if pageType == "home" %}
+          <nav class="site-nav" aria-label="{{ currentLocale.labels.primaryNavigation }}">
+            <a href="#tenets">{{ currentLocale.labels.tenets }}</a>
+            <a href="#about">{{ currentLocale.labels.about }}</a>
           </nav>
         {% endif %}
+        {% if pageType != "landing" %}
         <nav class="language-switch" aria-label="{{ currentLocale.labels.languageSwitch }}">
           {% for alternateLang in site.languages %}
             <a
               href="{{ alternateLang | localeRoot }}"
               lang="{{ alternateLang }}"
+              hreflang="{{ site.locales[alternateLang].hreflang }}"
               data-preferred-locale="{{ alternateLang }}"
-              {% if pageType != "landing" and alternateLang == currentLang %}aria-current="page"{% endif %}
+              {% if pageType == "home" %}data-sync-fragment{% endif %}
+              {% if pageType == "home" and alternateLang == currentLang %}aria-current="page"{% endif %}
             >{{ site.locales[alternateLang].nativeLabel }}</a>
           {% endfor %}
-          {% if pageType != "landing" %}
-            <a href="{{ site.xDefaultHomePath }}?stay=1">{{ currentLocale.labels.languageChooser }}</a>
-          {% endif %}
         </nav>
+        {% else %}
+          <p class="header-note">Those who know together <span aria-hidden="true">·</span> <span lang="zh-Hant">共知天下</span></p>
+        {% endif %}
       </header>
-      <main id="main-content">
+      <main id="main-content" tabindex="-1">
         {{ content | safe }}
       </main>
       <footer class="site-footer">
         <p>{{ currentLocale.labels.doctrineVersion }}: {{ tenets.version }}{% if currentLang == "en" %} ({{ tenets.status }}){% else %} <span lang="en">({{ tenets.status }})</span>{% endif %}</p>
+        {% if pageType != "landing" %}
+          <a href="{{ site.xDefaultHomePath }}?stay=1">{{ currentLocale.labels.languageChooser }}</a>
+        {% endif %}
       </footer>
     </div>
     <script>
       (() => {
         const storageKey = {{ site.localePreferenceStorageKey | json | safe }};
         const links = document.querySelectorAll("[data-preferred-locale]");
+
+        function syncLanguageLinks() {
+          const fragment = window.location.hash;
+          const isReadingSection = /^#(?:introduction|tenets|about|tenet-[a-z-]+)$/.test(fragment);
+
+          for (const link of links) {
+            if (link.hasAttribute("data-sync-fragment")) {
+              const url = new URL(link.href);
+              url.hash = isReadingSection ? fragment : "";
+              link.href = url.href;
+            }
+          }
+        }
+
+        syncLanguageLinks();
+        window.addEventListener("hashchange", syncLanguageLinks);
 
         for (const link of links) {
           link.addEventListener("click", () => {
@@ -130,6 +143,9 @@
         }
       })();
     </script>
+    {% if pageType == "home" %}
+      <script src="/assets/reader.js" defer></script>
+    {% endif %}
     {% if pageType == "landing" %}
       <script>
         (() => {

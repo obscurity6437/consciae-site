@@ -8,7 +8,7 @@
     "build": "eleventy",
     "clean": "rm -rf _site",
     "dev": "eleventy --serve --incremental",
-    "test": "node scripts/validate-site.js",
+    "test": "node scripts/validate-site.js && node --test scripts/reader.test.js",
     "audit": "npm audit --audit-level=high",
     "check": "npm run clean && npm run build && npm test"
   },
