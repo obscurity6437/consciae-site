@@ -98,7 +98,7 @@
             >{{ site.locales[alternateLang].nativeLabel }}</a>
           {% endfor %}
           {% if pageType != "landing" %}
-            <a href="{{ site.xDefaultHomePath }}">{{ currentLocale.labels.languageChooser }}</a>
+            <a href="{{ site.xDefaultHomePath }}?stay=1">{{ currentLocale.labels.languageChooser }}</a>
           {% endif %}
         </nav>
       </header>
@@ -106,7 +106,7 @@
         {{ content | safe }}
       </main>
       <footer class="site-footer">
-        <p>{{ currentLocale.labels.doctrineVersion }}: {{ tenets.version }} <span lang="en">({{ tenets.status }})</span></p>
+        <p>{{ currentLocale.labels.doctrineVersion }}: {{ tenets.version }}{% if currentLang == "en" %} ({{ tenets.status }}){% else %} <span lang="en">({{ tenets.status }})</span>{% endif %}</p>
       </footer>
     </div>
     <script>
