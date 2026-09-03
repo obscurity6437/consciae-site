@@ -1,25 +1,26 @@
-{% set currentLang = lang or locale or (entry and entry.lang) or site.defaultLanguage %}
-{% set currentLocale = site.locales[currentLang] %}
-{% set pageTitle = title %}
-{% if not pageTitle %}
-  {% set pageTitle = currentLocale.seo.homeTitle %}
-{% endif %}
-{% set pageDescription = description %}
-{% if not pageDescription %}
-  {% set pageDescription = currentLocale.seo.homeDescription %}
-{% endif %}
-{% set canonicalPath = page.url or (currentLang | localeRoot) %}
-{% if pageType == "landing" %}
-  {% set canonicalPath = site.xDefaultHomePath %}
-{% endif %}
-{% set headerSubtitle = currentLocale.subtitle %}
-{% set headerLanguageLine = currentLocale.languageLine %}
-{% set headerHomeHref = currentLang | localeRoot %}
-{% if pageType == "landing" %}
-  {% set headerSubtitle = site.landing.subtitle %}
-  {% set headerLanguageLine = site.landing.languageLine %}
-  {% set headerHomeHref = site.xDefaultHomePath %}
-{% endif %}
+{%- set currentLang = lang or locale or (entry and entry.lang) or site.defaultLanguage -%}
+{%- set currentLocale = site.locales[currentLang] -%}
+{%- set pageTitle = title -%}
+{%- if not pageTitle -%}
+  {%- set pageTitle = currentLocale.seo.homeTitle -%}
+{% endif -%}
+{%- set pageDescription = description -%}
+{%- if not pageDescription -%}
+  {%- set pageDescription = currentLocale.seo.homeDescription -%}
+{% endif -%}
+{%- set canonicalPath = page.url or (currentLang | localeRoot) -%}
+{%- if pageType == "landing" -%}
+  {%- set canonicalPath = site.xDefaultHomePath -%}
+{% endif -%}
+{%- set headerSubtitle = currentLocale.subtitle -%}
+{%- set headerLanguageLine = currentLocale.languageLine -%}
+{%- set headerHomeHref = currentLang | localeRoot -%}
+{%- if pageType == "landing" -%}
+  {%- set headerSubtitle = site.landing.subtitle -%}
+  {%- set headerLanguageLine = site.landing.languageLine -%}
+  {#- The landing brand link must not re-trigger the locale redirect. -#}
+  {%- set headerHomeHref = site.xDefaultHomePath ~ "?stay=1" -%}
+{% endif -%}
 <!doctype html>
 <html lang="{{ currentLocale.langAttr }}" dir="{{ currentLocale.direction }}">
   <head>
@@ -76,7 +77,10 @@
           <a class="brand-mark" href="{{ headerHomeHref }}">{{ site.name }}</a>
           {% if pageType != "home" %}
             <p class="brand-subtitle">{{ headerSubtitle }}</p>
-            <p class="language-line">{{ headerLanguageLine }}</p>
+            <p class="language-line">{%- for part in headerLanguageLine -%}
+              {%- if not loop.first %} · {% endif -%}
+              {%- if part.lang -%}<span lang="{{ part.lang }}">{{ part.text }}</span>{%- else -%}{{ part.text }}{%- endif -%}
+            {%- endfor -%}</p>
           {% endif %}
         </div>
         {% if pageType == "landing" %}
@@ -88,15 +92,22 @@
           {% for alternateLang in site.languages %}
             <a
               href="{{ alternateLang | localeRoot }}"
+              lang="{{ alternateLang }}"
               data-preferred-locale="{{ alternateLang }}"
               {% if pageType != "landing" and alternateLang == currentLang %}aria-current="page"{% endif %}
             >{{ site.locales[alternateLang].nativeLabel }}</a>
           {% endfor %}
+          {% if pageType != "landing" %}
+            <a href="{{ site.xDefaultHomePath }}?stay=1">{{ currentLocale.labels.languageChooser }}</a>
+          {% endif %}
         </nav>
       </header>
       <main id="main-content">
         {{ content | safe }}
       </main>
+      <footer class="site-footer">
+        <p>{{ currentLocale.labels.doctrineVersion }}: {{ tenets.version }}{% if currentLang == "en" %} ({{ tenets.status }}){% else %} <span lang="en">({{ tenets.status }})</span>{% endif %}</p>
+      </footer>
     </div>
     <script>
       (() => {

@@ -21,7 +21,6 @@ permalink: /index.html
 <section class="section-head section-block" id="languages">
   <div>
     <h2>{{ site.landing.labels.chooseLanguage }}</h2>
-    <p>{{ site.landing.labels.automaticRedirectBody }}</p>
   </div>
 </section>
 
@@ -29,10 +28,10 @@ permalink: /index.html
   {% for localeCode in site.languages %}
     {% set localeDefinition = site.locales[localeCode] %}
     <li class="language-item">
-      <article>
+      <article aria-labelledby="language-{{ localeCode }}-title">
         <p class="tenet-kicker">{{ localeDefinition.label }}</p>
-        <h2>{{ localeDefinition.nativeLabel }}</h2>
-        <p class="language-card__summary">{{ localeDefinition.seo.homeDescription }}</p>
+        <h2 id="language-{{ localeCode }}-title" lang="{{ localeCode }}">{{ localeDefinition.nativeLabel }}</h2>
+        <p class="language-card__summary" lang="{{ localeCode }}">{{ localeDefinition.seo.homeDescription }}</p>
         <p class="language-card__action">
           <a href="{{ localeCode | localeRoot }}" data-preferred-locale="{{ localeCode }}">
             {{ site.landing.labels.enterSite }}
@@ -46,4 +45,5 @@ permalink: /index.html
 <section class="prose section-block">
   <h2>{{ site.landing.labels.automaticRedirect }}</h2>
   <p>{{ site.landing.labels.automaticRedirectBody }}</p>
+  <p><a href="{{ site.xDefaultHomePath }}?stay=1">{{ site.landing.labels.stayOnThisPage }}</a></p>
 </section>

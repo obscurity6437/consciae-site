@@ -3,15 +3,17 @@
   "private": true,
   "version": "0.1.0",
   "description": "Static website for consciae.org",
+  "license": "MIT",
   "scripts": {
     "build": "eleventy",
     "clean": "rm -rf _site",
     "dev": "eleventy --serve --incremental",
     "test": "node scripts/validate-site.js",
-    "check": "npm run clean && npm run build && npm test && npm audit --audit-level=high"
+    "audit": "npm audit --audit-level=high",
+    "check": "npm run clean && npm run build && npm test"
   },
   "engines": {
-    "node": ">=20"
+    "node": ">=24"
   },
   "dependencies": {
     "@11ty/eleventy": "^3.1.6",
